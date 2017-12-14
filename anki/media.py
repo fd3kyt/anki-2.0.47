@@ -26,11 +26,8 @@ class MediaManager(object):
     ]
     regexps = soundRegexps + imgRegexps
 
-    def __init__(self, col, server):
+    def __init__(self, col):
         self.col = col
-        if server:
-            self._dir = None
-            return
         # media directory
         self._dir = re.sub("(?i)\.(anki2)$", ".media", self.col.path)
         # convert dir to unicode if it's not already
@@ -51,8 +48,6 @@ class MediaManager(object):
         self.connect()
 
     def connect(self):
-        if self.col.server:
-            return
         path = self.dir()+".db2"
         create = not os.path.exists(path)
         os.chdir(self._dir)
@@ -103,8 +98,6 @@ create table meta (dirMod int, lastUsn int); insert into meta values (0, 0);
             os.rename("../collection.media.db", npath)
 
     def close(self):
-        if self.col.server:
-            return
         self.db.close()
         self.db = None
         # change cwd back to old location
